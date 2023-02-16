@@ -46,6 +46,8 @@ This app allows you to
 -Create an account or login with username and password.
 
 -Find books using Google Books external API, save books to favorites list, and remove books from favorites list
+![image](https://user-images.githubusercontent.com/3950562/219255682-e2193769-5745-45ad-9c4d-2001aee390f8.png)
+![image](https://user-images.githubusercontent.com/3950562/219255693-4ec82e3b-cc77-4207-ac21-cd9e8d31958b.png)
 
 ## Deployed Application
 
