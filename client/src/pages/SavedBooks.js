@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
@@ -14,7 +14,6 @@ const SavedBooks = () => {
   const [removeBook] = useMutation(REMOVE_BOOK);
 
 
-
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -25,11 +24,20 @@ const SavedBooks = () => {
     try {
       const { data } = await removeBook({
         variables: { bookId: bookId },
+        update: (cache) => {
+          const data = cache.readQuery({ query: GET_ME });
+          const userDataCache = data.me;
+          const savedBooksCache = userDataCache.savedBooks;
+          const updatedBookCache = savedBooksCache.filter(
+            (book) => book.bookId !== bookId
+          );
+          data.me.savedBooks = updatedBookCache;
+          cache.writeQuery({
+            query: GET_ME,
+            data: { data: { ...data.me.savedBooks } },
+          });
+        },
       });
-
-      if (!data) {
-        throw new Error('something went wrong!');
-      }
 
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
